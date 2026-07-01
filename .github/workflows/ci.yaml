@@ -1,0 +1,26 @@
+name: Continuous Integration
+
+on: 
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branches
+        run: |
+          if [[ "${GITHUB_BASE_REF}" == "main" && "${GITHUB_HEAD_REF}" != "develop" ]]; then
+            echo "Error: Pull request into 'main' branch must come from 'develop' branch only"
+            exit 1
+          fi
+      - name: Checkout code to GH runner
+        uses: actions/checkout@v4
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install packages
+        run: npm ci
+      - name: Build
+        run: npm run build
