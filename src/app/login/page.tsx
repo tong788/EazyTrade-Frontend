@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { api } from "@/services/axios.config";
 
 type FieldType = {
   username?: string;
@@ -12,15 +13,22 @@ type FieldType = {
 };
 
 const LoginPage = () => {
-  const onFinish = (values: FieldType) => {
-    console.log("Success:", values);
+  const router = useRouter();
+
+  const handleSubmit = async (values: FieldType) => {
+    try {
+      console.log(values)
+      const response = await api.post("/authentication/login", values);
+      console.log("Login success:", response.data);
+      router.push("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
-
-  const router = useRouter();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 min-h-screen bg-[#fafaf9]">
@@ -78,7 +86,7 @@ const LoginPage = () => {
             name="login"
             layout="vertical"
             initialValues={{ remember: true }}
-            onFinish={onFinish}
+            onFinish={handleSubmit}
             onFinishFailed={onFinishFailed}
             requiredMark={false}
             autoComplete="off"
@@ -149,7 +157,6 @@ const LoginPage = () => {
                 block
                 style={{ height: "auto", padding: "12px 16px" }}
                 className="bg-[#122c3c] hover:bg-[#1a3f56] active:bg-[#0d202c] border-none font-bold rounded-xl shadow-lg shadow-blue-900/10 hover:shadow-blue-900/20 transition-all duration-200 cursor-pointer text-base text-white"
-                onClick={() => router.push("/")}
               >
                 Login
               </Button>
