@@ -1,12 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
 
 type authState = {
-  user: User | null;
+  id: string | null;
+  user: Account | null;
   isAuthenticated: boolean;
   status: "idle" | "loading" | "success" | "failed";
 };
 
-export interface User {
+export interface Account {
   username: string;
   firstname: string;
   lastname: string;
@@ -16,18 +17,24 @@ export interface User {
 }
 
 const initialState: authState = {
+  id: null,
   user: null,
   isAuthenticated: false,
   status: "idle",
 };
 
-function setCredentialsReducer(state: authState, action: PayloadAction<User>) {
-  state.user = action.payload;
+function setCredentialsReducer(
+  state: authState,
+  action: PayloadAction<{ id: string; user: Account }>,
+) {
+  state.id = action.payload.id;
+  state.user = action.payload.user;
   state.isAuthenticated = true;
   state.status = "success";
 }
 
 function resetAuthStateReducer(state: authState) {
+  state.id = initialState.id;
   state.user = initialState.user;
   state.isAuthenticated = initialState.isAuthenticated;
   state.status = initialState.status;
@@ -37,7 +44,18 @@ export const authSlice = createSlice({
   name: "authSlice",
   initialState,
   reducers: {
-    setCredentials: setCredentialsReducer,
+    setCredentials: {
+      // prepare data by putting id for reference in redux store
+      prepare(userData: Account) {
+        return {
+          payload: {
+            id: nanoid(),
+            user: userData,
+          },
+        };
+      },
+      reducer: setCredentialsReducer,
+    },
     resetAuthState: resetAuthStateReducer,
   },
 });
