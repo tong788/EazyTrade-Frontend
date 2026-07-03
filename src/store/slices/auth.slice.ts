@@ -1,4 +1,11 @@
-import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  PayloadAction,
+  nanoid,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
+import { api } from "@/services/axios.config";
+import { LoginFormType } from "@/app/login/page";
 
 type authState = {
   id: string | null;
@@ -40,6 +47,14 @@ function resetAuthStateReducer(state: authState) {
   state.status = initialState.status;
 }
 
+export const login = createAsyncThunk(
+  "/login",
+  async (payload: LoginFormType) => {
+    const response = await api.post("/authentication/login", payload);
+    return response.data;
+  },
+);
+
 export const authSlice = createSlice({
   name: "authSlice",
   initialState,
@@ -57,6 +72,26 @@ export const authSlice = createSlice({
       reducer: setCredentialsReducer,
     },
     resetAuthState: resetAuthStateReducer,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.pending, (state: authState) => {
+        state.status = "loading";
+      })
+      .addCase(
+        login.fulfilled,
+        (state: authState, action: PayloadAction<Account>) => {
+          state.id = nanoid();
+          state.status = "success";
+          state.user = action.payload;
+          state.isAuthenticated = true;
+        },
+      )
+      // action is to be handled (statusCode 500 or smt)
+      .addCase(login.rejected, (state: authState) => {
+        state.status = "failed";
+        state.isAuthenticated = false;
+      });
   },
 });
 
