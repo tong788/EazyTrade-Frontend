@@ -4,11 +4,10 @@ import Image from "next/image";
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { api } from "@/services/axios.config";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setCredentials } from "@/store/slices/auth.slice";
+import { login } from "@/store/slices/auth.slice";
 
-type LoginFormType = {
+export type LoginFormType = {
   username?: string;
   password?: string;
   remember?: boolean;
@@ -23,11 +22,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (values: LoginFormType) => {
     try {
-      const response = await api.post("/authentication/login", values);
-
-      // Extract the user data (assumes backend returns either the User object directly, or nested in a 'user' key)
-      const userData = response.data;
-      dispatch(setCredentials(userData));
+      await dispatch(login(values)).unwrap();
 
       router.push("/");
     } catch (error) {
