@@ -1,5 +1,8 @@
+import Link from "next/link";
+
 const MainPage = () => {
-  return <div className="bg-amber-400">Hello world</div>;
+
+  return <Link href="/login">Logout button</Link>;
 };
 
 export default MainPage;
