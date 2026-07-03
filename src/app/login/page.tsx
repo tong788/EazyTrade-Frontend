@@ -5,8 +5,10 @@ import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/services/axios.config";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setCredentials } from "@/store/slices/auth.slice";
 
-type FieldType = {
+type LoginFormType = {
   username?: string;
   password?: string;
   remember?: boolean;
@@ -14,12 +16,19 @@ type FieldType = {
 
 const LoginPage = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
 
-  const handleSubmit = async (values: FieldType) => {
+  console.log(user);
+
+  const handleSubmit = async (values: LoginFormType) => {
     try {
-      console.log(values)
       const response = await api.post("/authentication/login", values);
-      console.log("Login success:", response.data);
+
+      // Extract the user data (assumes backend returns either the User object directly, or nested in a 'user' key)
+      const userData = response.data;
+      dispatch(setCredentials(userData));
+
       router.push("/");
     } catch (error) {
       console.error("Login failed:", error);
@@ -92,7 +101,7 @@ const LoginPage = () => {
             autoComplete="off"
             className="space-y-4"
           >
-            <Form.Item<FieldType>
+            <Form.Item<LoginFormType>
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Username
@@ -110,7 +119,7 @@ const LoginPage = () => {
               />
             </Form.Item>
 
-            <Form.Item<FieldType>
+            <Form.Item<LoginFormType>
               label={
                 <div className="flex justify-between items-center w-full">
                   <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
@@ -138,7 +147,7 @@ const LoginPage = () => {
             </Link>
 
             <div className="flex items-center justify-between pt-1 mt-3">
-              <Form.Item<FieldType>
+              <Form.Item<LoginFormType>
                 name="remember"
                 valuePropName="checked"
                 noStyle
