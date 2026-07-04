@@ -49,8 +49,8 @@ function resetAuthStateReducer(state: authState) {
 
 export const login = createAsyncThunk(
   "/login",
-  async (payload: LoginFormType) => {
-    const response = await api.post("/authentication/login", payload);
+  async (requestPayload: LoginFormType) => {
+    const response = await api.post("/authentication/login", requestPayload);
     return response.data;
   },
 );
