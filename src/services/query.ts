@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "./axios.config";
 
-export const apiQuery = createApi({
+export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}` }),
   endpoints: (builder) => ({
@@ -9,10 +9,10 @@ export const apiQuery = createApi({
       query: (data) => ({
         url: "/authentication/login",
         method: "post",
-        body: data
-      })
-    })
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation} = apiQuery
+export const { useLoginMutation } = api;
