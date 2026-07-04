@@ -1,16 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import authReducer from "./slices/auth.slice";
-import { apiQuery } from "@/services/query";
+import { api } from "@/services/query";
 
 export const createStore = () => {
   return configureStore({
     reducer: {
       auth: authReducer,
-      [apiQuery.reducerPath]: apiQuery.reducer,
+      [api.reducerPath]: api.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(apiQuery.middleware),
+      getDefaultMiddleware().concat(api.middleware),
   });
 };
 
