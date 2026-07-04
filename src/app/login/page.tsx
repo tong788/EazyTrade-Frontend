@@ -4,8 +4,9 @@ import Image from "next/image";
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch } from "@/store";
 import { login } from "@/store/slices/auth.slice";
+import { useLoginMutation } from "@/services/query";
 
 export type LoginFormType = {
   username?: string;
@@ -16,13 +17,12 @@ export type LoginFormType = {
 const LoginPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
-
-  console.log(user);
+  const [ loginMutation, {isLoading, isError} ] = useLoginMutation();
 
   const handleSubmit = async (values: LoginFormType) => {
     try {
-      await dispatch(login(values)).unwrap();
+      // await dispatch(login(values)).unwrap();
+      await loginMutation(values)
 
       router.push("/");
     } catch (error) {
