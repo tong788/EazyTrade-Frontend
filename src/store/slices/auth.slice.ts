@@ -2,10 +2,8 @@ import {
   createSlice,
   PayloadAction,
   nanoid,
-  createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { api } from "@/services/axios.config";
-import { LoginFormType } from "@/app/login/page";
+import { apiQuery } from "@/services/apiQuery";
 
 type authState = {
   id: string | null;
@@ -47,14 +45,6 @@ function resetAuthStateReducer(state: authState) {
   state.status = initialState.status;
 }
 
-export const login = createAsyncThunk(
-  "/login",
-  async (requestPayload: LoginFormType) => {
-    const response = await api.post("/authentication/login", requestPayload);
-    return response.data;
-  },
-);
-
 export const authSlice = createSlice({
   name: "authSlice",
   initialState,
@@ -75,20 +65,19 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state: authState) => {
-        state.status = "loading";
+      .addMatcher(apiQuery.endpoints.login.matchPending, (state) => {
+        state.id = initialState.id;
+        state.status = "loading"
+        state.user = initialState.user
+        state.isAuthenticated = false
       })
-      .addCase(
-        login.fulfilled,
-        (state: authState, action: PayloadAction<Account>) => {
-          state.id = nanoid();
-          state.status = "success";
-          state.user = action.payload;
-          state.isAuthenticated = true;
-        },
-      )
-      // action is to be handled (statusCode 500 or smt)
-      .addCase(login.rejected, (state: authState) => {
+      .addMatcher(apiQuery.endpoints.login.matchFulfilled, (state, action) => {
+        state.id = nanoid();
+        state.status = "success";
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addMatcher(apiQuery.endpoints.login.matchRejected, (state) => {
         state.status = "failed";
         state.isAuthenticated = false;
       });
