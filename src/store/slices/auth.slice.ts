@@ -67,9 +67,9 @@ export const authSlice = createSlice({
     builder
       .addMatcher(apiQuery.endpoints.login.matchPending, (state) => {
         state.id = initialState.id;
-        state.status = "loading"
-        state.user = initialState.user
-        state.isAuthenticated = false
+        state.status = "loading";
+        state.user = initialState.user;
+        state.isAuthenticated = false;
       })
       .addMatcher(apiQuery.endpoints.login.matchFulfilled, (state, action) => {
         state.id = nanoid();
