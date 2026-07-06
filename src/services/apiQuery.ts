@@ -1,15 +1,15 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "./axios.config";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import axiosBaseQuery from "./axiosbaseQuery";
 
 export const apiQuery = createApi({
   reducerPath: "apiQuery",
-  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}` }),
+  baseQuery: axiosBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "" }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
         url: "/authentication/login",
         method: "post",
-        body: data,
+        data: data,
       }),
     }),
   }),

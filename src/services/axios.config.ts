@@ -13,4 +13,4 @@ const configurations: AxiosRequestConfig = {
   headers: headers,
 };
 
-export const api = axios.create(configurations);
+export const axiosInstance = axios.create(configurations);

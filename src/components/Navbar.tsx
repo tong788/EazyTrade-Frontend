@@ -4,8 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch } from "@/store";
 import { resetAuthState } from "@/store/slices/auth.slice";
+import { useAuth } from "@/hooks/useAuth";
 
 // SVG Icons
 const SearchIcon = () => (
@@ -53,7 +54,7 @@ const PlusIcon = () => (
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated} = useAuth()
   
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
