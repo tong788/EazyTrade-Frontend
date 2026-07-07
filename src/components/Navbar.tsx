@@ -32,7 +32,7 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(resetAuthState());
     setDropdownOpen(false);
-    router.push("/authentication/login");
+    router.push("/auth/login");
   };
 
   const getInitials = () => {
@@ -223,13 +223,13 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-2">
                 <Link
-                  href="/authentication/login"
+                  href="/auth/login"
                   className="text-sm font-bold text-[#122c3c] hover:text-[#1a3f56] px-4 py-2 rounded-xl transition-colors duration-150"
                 >
                   Sign In
                 </Link>
                 <Link
-                  href="/authentication/login"
+                  href="/auth/login"
                   className="text-sm font-bold text-white bg-[#122c3c] hover:bg-[#1a3f56] px-4 py-2 rounded-xl shadow-md shadow-blue-900/10 hover:shadow-blue-900/20 transition-all duration-150"
                 >
                   Register
@@ -323,13 +323,13 @@ const Navbar = () => {
             ) : (
               <div className="grid grid-cols-2 gap-2 pt-2">
                 <Link
-                  href="/authentication/login"
+                  href="/auth/login"
                   className="text-center text-sm font-bold text-[#122c3c] border border-stone-200 px-4 py-2.5 rounded-xl hover:bg-stone-50 transition-all"
                 >
                   Sign In
                 </Link>
                 <Link
-                  href="/authentication/login"
+                  href="/auth/login"
                   className="text-center text-sm font-bold text-white bg-[#122c3c] px-4 py-2.5 rounded-xl shadow-md transition-all"
                 >
                   Register

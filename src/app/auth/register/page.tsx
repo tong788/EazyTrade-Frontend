@@ -19,7 +19,7 @@ const RegisterPage = () => {
       const { confirmPassword, ...registerData } = values;
       await registerMutation(registerData).unwrap();
       message.success("Registration successful! Please log in.");
-      router.push("/authentication/login?registered=true");
+      router.push("/auth/login?registered=true");
     } catch (err) {
       console.error("Registration failed:", err);
     }
@@ -264,7 +264,7 @@ const RegisterPage = () => {
           <p className="mt-6 text-center text-sm text-stone-500">
             Already have an account?{" "}
             <Link
-              href="/authentication/login"
+              href="/auth/login"
               className="font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
             >
               Sign In
