@@ -1,18 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import axiosBaseQuery from "./axiosbaseQuery";
+import axiosBaseQuery from "./axiosBaseQuery";
 
 export const apiQuery = createApi({
   reducerPath: "apiQuery",
   baseQuery: axiosBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "" }),
-  endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (data) => ({
-        url: "/authentication/login",
-        method: "post",
-        data: data,
-      }),
-    }),
-  }),
+  endpoints: () => ({})
 });
-
-export const { useLoginMutation } = apiQuery;
