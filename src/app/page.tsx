@@ -199,7 +199,7 @@ const MainPage = () => {
                 </Link>
                 {!isAuthenticated && (
                   <Link
-                    href="/authentication/login"
+                    href="/auth/login"
                     className="px-6 py-3 font-bold bg-transparent border border-white/30 text-white rounded-xl hover:bg-white/10 hover:border-white/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 text-sm cursor-pointer"
                   >
                     Create Account

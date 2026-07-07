@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
-import { AuthApi } from "@/app/authentication/auth.service";
+import { AuthApi } from "@/app/auth/auth.service";
 
 type authState = {
   id: string | null;

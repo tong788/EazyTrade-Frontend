@@ -229,7 +229,7 @@ const LoginContent = () => {
           <p className="mt-8 text-center text-sm text-stone-500">
             Don&apos;t have an account?{" "}
             <Link
-              href="/authentication/register"
+              href="/auth/register"
               className="font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
             >
               Create an account
