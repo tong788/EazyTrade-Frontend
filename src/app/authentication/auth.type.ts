@@ -12,3 +12,20 @@ export interface LoginResponse {
   role: "admin" | "user" | "guest";
   imageUrl?: string;
 }
+
+export interface RegisterFormType {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+  email?: string;
+  firstname?: string;
+  lastname?: string;
+}
+
+export interface RegisterResponse {
+  message?: string;
+  success?: boolean;
+  username?: string;
+  email?: string;
+}
+

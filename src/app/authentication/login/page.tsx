@@ -3,14 +3,17 @@
 import Image from "next/image";
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "../auth.service";
 import { LoginFormType } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
+import { Suspense } from "react";
 
-const LoginPage = () => {
+const LoginContent = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isRegistered = searchParams.get("registered") === "true";
   const [loginMutation, { isLoading, isError, error }] = useLoginMutation();
 
   const handleSubmit = async (values: LoginFormType) => {
@@ -87,6 +90,33 @@ const LoginPage = () => {
               Please log in to your account to continue
             </p>
           </div>
+
+          {/* Success Message */}
+          {isRegistered && (
+            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-xl flex items-start gap-3 animate-slide-in">
+              <svg
+                className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <div className="flex-1">
+                <h4 className="text-sm font-bold text-emerald-900 leading-tight">
+                  Registration Successful
+                </h4>
+                <p className="text-xs text-emerald-700 mt-1 leading-normal">
+                  Your account has been created. Please log in.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {isError && (
@@ -199,7 +229,7 @@ const LoginPage = () => {
           <p className="mt-8 text-center text-sm text-stone-500">
             Don&apos;t have an account?{" "}
             <Link
-              href="#"
+              href="/authentication/register"
               className="font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
             >
               Create an account
@@ -211,4 +241,13 @@ const LoginPage = () => {
   );
 };
 
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LoginContent />
+    </Suspense>
+  );
+};
+
 export default LoginPage;
+
