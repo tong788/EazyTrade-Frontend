@@ -1,3 +1,4 @@
+import { BaseQueryFn } from "@reduxjs/toolkit/query/react";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { axiosInstance } from "./axios.config";
 
@@ -8,9 +9,16 @@ type queryParams = {
   params?: AxiosRequestConfig["params"];
 };
 
+export type ApiError = {
+  status: number | string | undefined;
+  code: string | undefined;
+  message: string | undefined;
+  data: unknown;
+};
+
 const axiosBaseQuery =
-  ({ baseUrl }: { baseUrl: string }) =>
-  async ({ url, method, data, params }: queryParams) => {
+  ({ baseUrl }: { baseUrl: string }): BaseQueryFn<queryParams, unknown, ApiError> =>
+  async ({ url, method, data, params }) => {
     try {
       const result = await axiosInstance({
         url: baseUrl + url,

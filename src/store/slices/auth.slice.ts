@@ -1,9 +1,5 @@
-import {
-  createSlice,
-  PayloadAction,
-  nanoid,
-} from "@reduxjs/toolkit";
-import { apiQuery } from "@/services/apiQuery";
+import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
+import { AuthApi } from "@/app/authentication/auth.service";
 
 type authState = {
   id: string | null;
@@ -65,19 +61,19 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(apiQuery.endpoints.login.matchPending, (state) => {
+      .addMatcher(AuthApi.endpoints.login.matchPending, (state) => {
         state.id = initialState.id;
         state.status = "loading";
         state.user = initialState.user;
         state.isAuthenticated = false;
       })
-      .addMatcher(apiQuery.endpoints.login.matchFulfilled, (state, action) => {
+      .addMatcher(AuthApi.endpoints.login.matchFulfilled, (state, action) => {
         state.id = nanoid();
         state.status = "success";
         state.user = action.payload;
         state.isAuthenticated = true;
       })
-      .addMatcher(apiQuery.endpoints.login.matchRejected, (state) => {
+      .addMatcher(AuthApi.endpoints.login.matchRejected, (state) => {
         state.status = "failed";
         state.isAuthenticated = false;
       });

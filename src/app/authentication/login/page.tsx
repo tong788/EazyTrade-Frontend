@@ -4,15 +4,10 @@ import Image from "next/image";
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLoginMutation } from "@/services/apiQuery";
-
+import { useLoginMutation } from "../auth.service";
+import { LoginFormType } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-export type LoginFormType = {
-  username?: string;
-  password?: string;
-  remember?: boolean;
-};
+import { ApiError } from "@/services/axiosBaseQuery";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -31,22 +26,10 @@ const LoginPage = () => {
     console.log("Failed:", isError);
   };
 
-  const getErrorMessage = (err: unknown) => {
+  const getErrorMessage = (err: unknown): string => {
     if (!err) return "Invalid username or password. Please try again.";
-    if (err && typeof err === "object") {
-      if ("data" in err) {
-        const errorData = err.data as any;
-        return (
-          errorData?.message ||
-          errorData?.error ||
-          "Invalid username or password."
-        );
-      }
-      if ("message" in err) {
-        return err.message;
-      }
-    }
-    return "An unexpected error occurred. Please try again.";
+    const apiError = err as ApiError;
+    return apiError.message || "An unexpected error occurred. Please try again.";
   };
 
   if (isLoading) {
