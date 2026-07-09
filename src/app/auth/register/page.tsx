@@ -5,23 +5,21 @@ import { Form, Input, Button, message } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "../auth.service";
-import { RegisterFormType } from "../auth.type";
+import { RegisterFormType, RegisterFormSchema } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
-
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterFormSchema } from "../auth.type";
 
 const RegisterPage = () => {
   const router = useRouter();
-  const [registerMutation, { isLoading, isError, error }] = useRegisterMutation();
+  const [registerMutation, { isLoading, isError, error }] =
+    useRegisterMutation();
 
   const {
-    register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
@@ -34,10 +32,12 @@ const RegisterPage = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterFormType> = async (values: RegisterFormType) => {
+  const onSubmit: SubmitHandler<RegisterFormType> = async (
+    values: RegisterFormType,
+  ) => {
     try {
       // Remove confirmPassword before sending to backend if the backend doesn't expect it
-      const { confirmPassword, ...registerData } = values;
+      const { ...registerData } = values;
       await registerMutation(registerData).unwrap();
       message.success("Registration successful! Please log in.");
       router.push("/auth/login?registered=true");
@@ -49,7 +49,9 @@ const RegisterPage = () => {
   const getErrorMessage = (err: unknown): string => {
     if (!err) return "Registration failed. Please try again.";
     const apiError = err as ApiError;
-    return apiError.message || "An unexpected error occurred. Please try again.";
+    return (
+      apiError.message || "An unexpected error occurred. Please try again."
+    );
   };
 
   if (isLoading) {
@@ -290,6 +292,7 @@ const RegisterPage = () => {
                 block
                 style={{ height: "auto", padding: "12px 16px" }}
                 className="bg-[#122c3c] hover:bg-[#1a3f56] active:bg-[#0d202c] border-none font-bold rounded-xl shadow-lg shadow-blue-900/10 hover:shadow-blue-900/20 transition-all duration-200 cursor-pointer text-base text-white"
+                disabled={isSubmitting}
               >
                 Register
               </Button>

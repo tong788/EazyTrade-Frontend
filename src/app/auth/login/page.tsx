@@ -5,13 +5,12 @@ import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "../auth.service";
-import { LoginFormType } from "../auth.type";
+import { LoginFormType, LoginFormSchema } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
 import { Suspense } from "react";
-import { SubmitHandler, useForm, Controller, useWatch } from "react-hook-form";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormSchema } from "../auth.type";
 
 const LoginContent = () => {
   const router = useRouter();
@@ -19,10 +18,9 @@ const LoginContent = () => {
   const isRegistered = searchParams.get("registered") === "true";
   const [loginMutation, { isLoading, isError, error }] = useLoginMutation();
   const {
-    register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormType>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -248,6 +246,7 @@ const LoginContent = () => {
                 block
                 style={{ height: "auto", padding: "12px 16px" }}
                 className="bg-[#122c3c] hover:bg-[#1a3f56] active:bg-[#0d202c] border-none font-bold rounded-xl shadow-lg shadow-blue-900/10 hover:shadow-blue-900/20 transition-all duration-200 cursor-pointer text-base text-white"
+                disabled={isSubmitting}
               >
                 Login
               </Button>
