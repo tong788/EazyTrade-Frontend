@@ -9,14 +9,32 @@ import { LoginFormType } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
 import { Suspense } from "react";
+import { SubmitHandler, useForm, Controller, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginFormSchema } from "../auth.type";
 
 const LoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isRegistered = searchParams.get("registered") === "true";
   const [loginMutation, { isLoading, isError, error }] = useLoginMutation();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormType>({
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      remember: true,
+    },
+  });
 
-  const handleSubmit = async (values: LoginFormType) => {
+  const onSubmit: SubmitHandler<LoginFormType> = async (
+    values: LoginFormType,
+  ) => {
     try {
       await loginMutation(values).unwrap();
       router.push("/");
@@ -25,14 +43,12 @@ const LoginContent = () => {
     }
   };
 
-  const onFinishFailed = () => {
-    console.log("Failed:", isError);
-  };
-
   const getErrorMessage = (err: unknown): string => {
     if (!err) return "Invalid username or password. Please try again.";
     const apiError = err as ApiError;
-    return apiError.message || "An unexpected error occurred. Please try again.";
+    return (
+      apiError.message || "An unexpected error occurred. Please try again."
+    );
   };
 
   if (isLoading) {
@@ -145,35 +161,36 @@ const LoginContent = () => {
             </div>
           )}
 
-          <Form
+          <form
             name="login"
-            layout="vertical"
-            initialValues={{ remember: true }}
-            onFinish={handleSubmit}
-            onFinishFailed={onFinishFailed}
-            requiredMark={false}
+            onSubmit={handleSubmit(onSubmit)}
             autoComplete="off"
             className="space-y-4"
           >
-            <Form.Item<LoginFormType>
+            <Form.Item
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Username
                 </span>
               }
-              name="username"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
+              validateStatus={errors.username ? "error" : ""}
+              help={errors.username?.message}
             >
-              <Input
-                size="large"
-                placeholder="Enter your username"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="username"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    size="large"
+                    placeholder="Enter your username"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
 
-            <Form.Item<LoginFormType>
+            <Form.Item
               label={
                 <div className="flex justify-between items-center w-full">
                   <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
@@ -181,16 +198,21 @@ const LoginContent = () => {
                   </span>
                 </div>
               }
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
+              validateStatus={errors.password ? "error" : ""}
+              help={errors.password?.message}
               className="mb-2!"
             >
-              <Input.Password
-                size="large"
-                placeholder="Enter your password"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <Input.Password
+                    {...field}
+                    size="large"
+                    placeholder="Enter your password"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
             <Link
@@ -201,14 +223,20 @@ const LoginContent = () => {
             </Link>
 
             <div className="flex items-center justify-between pt-1 mt-3">
-              <Form.Item<LoginFormType>
-                name="remember"
-                valuePropName="checked"
-                noStyle
-              >
-                <Checkbox className="text-stone-600 font-medium select-none">
-                  Keep me signed in
-                </Checkbox>
+              <Form.Item noStyle>
+                <Controller
+                  control={control}
+                  name="remember"
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="text-stone-600 font-medium select-none"
+                    >
+                      Keep me signed in
+                    </Checkbox>
+                  )}
+                />
               </Form.Item>
             </div>
 
@@ -224,7 +252,7 @@ const LoginContent = () => {
                 Login
               </Button>
             </Form.Item>
-          </Form>
+          </form>
 
           <p className="mt-8 text-center text-sm text-stone-500">
             Don&apos;t have an account?{" "}
@@ -250,4 +278,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

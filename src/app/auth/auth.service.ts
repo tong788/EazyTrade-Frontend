@@ -1,5 +1,5 @@
 import { apiQuery } from "@/services/apiQuery";
-import { LoginFormType, LoginResponse, RegisterFormType, RegisterResponse } from "./auth.type";
+import { LoginFormType, LoginResponse, RegisterRequest, RegisterResponse } from "./auth.type";
 
 export const AuthApi = apiQuery.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,7 +10,7 @@ export const AuthApi = apiQuery.injectEndpoints({
         data: data,
       }),
     }),
-    register: builder.mutation<RegisterResponse, RegisterFormType>({
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (data) => ({
         url: "/authentication/register",
         method: "post",
