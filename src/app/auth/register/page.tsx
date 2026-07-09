@@ -9,11 +9,32 @@ import { RegisterFormType } from "../auth.type";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
 
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RegisterFormSchema } from "../auth.type";
+
 const RegisterPage = () => {
   const router = useRouter();
   const [registerMutation, { isLoading, isError, error }] = useRegisterMutation();
 
-  const handleSubmit = async (values: RegisterFormType) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<RegisterFormType>({
+    resolver: zodResolver(RegisterFormSchema),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<RegisterFormType> = async (values: RegisterFormType) => {
     try {
       // Remove confirmPassword before sending to backend if the backend doesn't expect it
       const { confirmPassword, ...registerData } = values;
@@ -114,136 +135,150 @@ const RegisterPage = () => {
             </div>
           )}
 
-          <Form
+          <form
             name="register"
-            layout="vertical"
-            onFinish={handleSubmit}
-            requiredMark={false}
+            onSubmit={handleSubmit(onSubmit)}
             autoComplete="off"
             className="space-y-4"
           >
             {/* First Name & Last Name in one row */}
             <div className="grid grid-cols-2 gap-4 mb-0!">
-              <Form.Item<RegisterFormType>
+              <Form.Item
                 label={
                   <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                     First Name
                   </span>
                 }
-                name="firstname"
-                rules={[
-                  { required: true, message: "Please input your first name!" },
-                ]}
+                validateStatus={errors.firstname ? "error" : ""}
+                help={errors.firstname?.message}
               >
-                <Input
-                  size="large"
-                  placeholder="First name"
-                  className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                <Controller
+                  control={control}
+                  name="firstname"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      size="large"
+                      placeholder="First name"
+                      className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                    />
+                  )}
                 />
               </Form.Item>
 
-              <Form.Item<RegisterFormType>
+              <Form.Item
                 label={
                   <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                     Last Name
                   </span>
                 }
-                name="lastname"
-                rules={[
-                  { required: true, message: "Please input your last name!" },
-                ]}
+                validateStatus={errors.lastname ? "error" : ""}
+                help={errors.lastname?.message}
               >
-                <Input
-                  size="large"
-                  placeholder="Last name"
-                  className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                <Controller
+                  control={control}
+                  name="lastname"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      size="large"
+                      placeholder="Last name"
+                      className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                    />
+                  )}
                 />
               </Form.Item>
             </div>
 
-            <Form.Item<RegisterFormType>
+            <Form.Item
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Username
                 </span>
               }
-              name="username"
-              rules={[
-                { required: true, message: "Please input a username!" },
-                { min: 3, message: "Username must be at least 3 characters!" },
-              ]}
+              validateStatus={errors.username ? "error" : ""}
+              help={errors.username?.message}
             >
-              <Input
-                size="large"
-                placeholder="Choose a username"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="username"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    size="large"
+                    placeholder="Choose a username"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
 
-            <Form.Item<RegisterFormType>
+            <Form.Item
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Email Address
                 </span>
               }
-              name="email"
-              rules={[
-                { required: true, message: "Please input your email address!" },
-                { type: "email", message: "Please enter a valid email address!" },
-              ]}
+              validateStatus={errors.email ? "error" : ""}
+              help={errors.email?.message}
             >
-              <Input
-                size="large"
-                placeholder="Enter your email"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    size="large"
+                    placeholder="Enter your email"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
 
-            <Form.Item<RegisterFormType>
+            <Form.Item
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Password
                 </span>
               }
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-                { min: 6, message: "Password must be at least 6 characters!" },
-              ]}
+              validateStatus={errors.password ? "error" : ""}
+              help={errors.password?.message}
             >
-              <Input.Password
-                size="large"
-                placeholder="Create a password"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <Input.Password
+                    {...field}
+                    size="large"
+                    placeholder="Create a password"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
 
-            <Form.Item<RegisterFormType>
+            <Form.Item
               label={
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Confirm Password
                 </span>
               }
-              name="confirmPassword"
-              dependencies={["password"]}
-              rules={[
-                { required: true, message: "Please confirm your password!" },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("The passwords you entered do not match!")
-                    );
-                  },
-                }),
-              ]}
+              validateStatus={errors.confirmPassword ? "error" : ""}
+              help={errors.confirmPassword?.message}
             >
-              <Input.Password
-                size="large"
-                placeholder="Confirm your password"
-                className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <Input.Password
+                    {...field}
+                    size="large"
+                    placeholder="Confirm your password"
+                    className="rounded-xl border-stone-200 focus:border-[#122c3c] focus:ring-1 focus:ring-[#122c3c]"
+                  />
+                )}
               />
             </Form.Item>
 
@@ -259,7 +294,7 @@ const RegisterPage = () => {
                 Register
               </Button>
             </Form.Item>
-          </Form>
+          </form>
 
           <p className="mt-6 text-center text-sm text-stone-500">
             Already have an account?{" "}
