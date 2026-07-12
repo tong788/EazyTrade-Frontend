@@ -1,4 +1,5 @@
 import z from "zod";
+import { roleKey } from "../constants/role.constant";
 
 export const LoginFormSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -12,25 +13,29 @@ export interface LoginResponse {
   firstname: string;
   lastname: string;
   email: string;
-  role: "admin" | "user" | "guest";
+  role: roleKey;
   imageUrl?: string;
 }
 
-export const RegisterFormSchema = z.object({
-  firstname: z.string().min(1, "First name is required"),
-  lastname: z.string().min(1, "Last name is required"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "The passwords you entered do not match!",
-  path: ["confirmPassword"],
-});
+export const RegisterFormSchema = z
+  .object({
+    firstname: z.string().min(1, "First name is required"),
+    lastname: z.string().min(1, "Last name is required"),
+    username: z.string().min(3, "Username must be at least 3 characters"),
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "The passwords you entered do not match!",
+    path: ["confirmPassword"],
+  });
 
 export type RegisterFormType = z.infer<typeof RegisterFormSchema>;
 
-export type RegisterRequest = Omit<RegisterFormType, "confirmPassword">;
+export type RegisterRequest = Omit<RegisterFormType, "confirmPassword"> & {
+  roleName: string;
+};
 
 export interface RegisterResponse {
   message?: string;
