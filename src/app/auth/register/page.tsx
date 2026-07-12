@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { ApiError } from "@/services/axiosBaseQuery";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ROLE } from "@/app/constants/role.constant";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -38,7 +39,11 @@ const RegisterPage = () => {
     try {
       // Remove confirmPassword before sending to backend if the backend doesn't expect it
       const { ...registerData } = values;
-      await registerMutation(registerData).unwrap();
+      // fix to be client via register page
+      await registerMutation({
+        roleName: ROLE.CLIENT,
+        ...registerData,
+      }).unwrap();
       message.success("Registration successful! Please log in.");
       router.push("/auth/login?registered=true");
     } catch (err) {
