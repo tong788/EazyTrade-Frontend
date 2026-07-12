@@ -20,6 +20,7 @@ import {
   MenuIcon,
   CloseIcon,
 } from "./custom-icons";
+import { ROLE } from "@/app/constants/role.constant";
 
 const Navbar = () => {
   const router = useRouter();
@@ -198,7 +199,7 @@ const Navbar = () => {
                         <SettingsIcon />
                         Settings
                       </Link>
-                      {user?.role === "admin" && (
+                      {user?.role === ROLE.ADMIN && (
                         <Link
                           href="#"
                           className="flex items-center gap-2 px-4 py-2.5 text-sm text-blue-600 hover:bg-blue-50 font-bold transition-colors"
