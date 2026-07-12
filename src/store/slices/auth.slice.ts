@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
 import { AuthApi } from "@/app/auth/auth.service";
+import { roleKey } from "@/app/constants/role.constant";
 
 type authState = {
   id: string | null;
@@ -13,7 +14,7 @@ export interface Account {
   firstname: string;
   lastname: string;
   email: string;
-  role: "admin" | "user" | "guest";
+  role: roleKey;
   imageUrl?: string;
 }
 
