@@ -11,6 +11,7 @@ const configurations: AxiosRequestConfig = {
   baseURL: BASE_URL,
   timeout: 5000, // Request timeout in milliseconds
   headers: headers,
+  withCredentials: true
 };
 
 export const axiosInstance = axios.create(configurations);
