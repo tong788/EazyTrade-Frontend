@@ -62,22 +62,34 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(AuthApi.endpoints.login.matchPending, (state) => {
-        state.id = initialState.id;
-        state.status = "loading";
-        state.user = initialState.user;
-        state.isAuthenticated = false;
-      })
-      .addMatcher(AuthApi.endpoints.login.matchFulfilled, (state, action) => {
-        state.id = nanoid();
-        state.status = "success";
-        state.user = action.payload;
-        state.isAuthenticated = true;
-      })
-      .addMatcher(AuthApi.endpoints.login.matchRejected, (state) => {
-        state.status = "failed";
-        state.isAuthenticated = false;
-      });
+      .addMatcher(
+        (AuthApi.endpoints.login.matchPending,
+        AuthApi.endpoints.getMe.matchPending),
+        (state) => {
+          state.id = initialState.id;
+          state.status = "loading";
+          state.user = initialState.user;
+          state.isAuthenticated = false;
+        },
+      )
+      .addMatcher(
+        (AuthApi.endpoints.login.matchFulfilled,
+        AuthApi.endpoints.getMe.matchFulfilled),
+        (state, action) => {
+          state.id = nanoid();
+          state.status = "success";
+          state.user = action.payload;
+          state.isAuthenticated = true;
+        },
+      )
+      .addMatcher(
+        (AuthApi.endpoints.login.matchRejected,
+        AuthApi.endpoints.getMe.matchRejected),
+        (state) => {
+          state.status = "failed";
+          state.isAuthenticated = false;
+        },
+      );
   },
 });
 
