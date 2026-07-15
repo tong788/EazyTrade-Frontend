@@ -9,3 +9,4 @@ export { SettingsIcon } from "./settings-icon";
 export { ShieldIcon } from "./shield-icon";
 export { MenuIcon } from "./menu-icon";
 export { CloseIcon } from "./close-icon";
+export { VerificationShieldIcon } from "./verificationshield-icon";
