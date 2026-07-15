@@ -1,5 +1,10 @@
 import { apiQuery } from "@/services/apiQuery";
-import { LoginFormType, LoginResponse, RegisterRequest, RegisterResponse } from "./auth.type";
+import {
+  LoginFormType,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from "./auth.type";
 
 export const AuthApi = apiQuery.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,7 +28,18 @@ export const AuthApi = apiQuery.injectEndpoints({
         method: "get",
       }),
     }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/authentication/logout",
+        method: "post",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetMeQuery } = AuthApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetMeQuery,
+  useLogoutMutation,
+} = AuthApi;

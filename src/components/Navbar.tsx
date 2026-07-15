@@ -4,8 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store";
-import { resetAuthState } from "@/store/slices/auth.slice";
 import { useAuth } from "@/hooks/useAuth";
 import {
   SearchIcon,
@@ -21,17 +19,18 @@ import {
   CloseIcon,
 } from "./custom-icons";
 import { ROLE } from "@/app/constants/role.constant";
+import { useLogoutMutation } from "@/app/auth/auth.service";
 
 const Navbar = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAuth();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(resetAuthState());
+  const [logoutMutation] = useLogoutMutation()
+  const handleLogout = async () => {
+    await logoutMutation().unwrap();
     setDropdownOpen(false);
     router.push("/auth/login");
   };

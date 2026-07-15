@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, nanoid, isAnyOf } from "@reduxjs/toolkit";
 import { AuthApi } from "@/app/auth/auth.service";
 import { roleKey } from "@/app/constants/role.constant";
 
@@ -63,8 +63,10 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        (AuthApi.endpoints.login.matchPending,
-        AuthApi.endpoints.getMe.matchPending),
+        isAnyOf(
+          AuthApi.endpoints.login.matchPending,
+          AuthApi.endpoints.getMe.matchPending,
+        ),
         (state) => {
           state.id = initialState.id;
           state.status = "loading";
@@ -73,8 +75,10 @@ export const authSlice = createSlice({
         },
       )
       .addMatcher(
-        (AuthApi.endpoints.login.matchFulfilled,
-        AuthApi.endpoints.getMe.matchFulfilled),
+        isAnyOf(
+          AuthApi.endpoints.login.matchFulfilled,
+          AuthApi.endpoints.getMe.matchFulfilled,
+        ),
         (state, action) => {
           state.id = nanoid();
           state.status = "success";
@@ -83,13 +87,16 @@ export const authSlice = createSlice({
         },
       )
       .addMatcher(
-        (AuthApi.endpoints.login.matchRejected,
-        AuthApi.endpoints.getMe.matchRejected),
+        isAnyOf(
+          AuthApi.endpoints.login.matchRejected,
+          AuthApi.endpoints.getMe.matchRejected,
+        ),
         (state) => {
           state.status = "failed";
           state.isAuthenticated = false;
         },
-      );
+      )
+      .addMatcher(AuthApi.endpoints.logout.matchFulfilled, resetAuthStateReducer);
   },
 });
 
